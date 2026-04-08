@@ -66,7 +66,13 @@ tags: [relevant, tags]
 - Use `[[wikilinks]]` for internal links (works in Obsidian, VS Code with extensions, and many markdown editors)
 - Link from source pages to wiki pages and vice versa
 - **Bidirectional linking:** If page A links to page B, page B should link back. When linking to a page that doesn't exist, create a stub.
+- **Contradictions:** When new information contradicts existing wiki content, note the contradiction explicitly — never silently overwrite. Use format: `> [!contradiction] [source: [[new-source]]] contradicts [source: [[old-source]]]: [explanation]`. Newer information generally supersedes older, but preserve both perspectives until resolved.
 - Cross-reference liberally — connections are as valuable as content
+
+### Tags
+- Use hierarchical tags where useful: `topic/subtopic` (e.g., `project/alpha`, `people/engineering`)
+- Keep tags consistent — check existing tags before creating new ones
+- Tag hierarchy helps filter and navigate as the wiki grows
 
 ### Wiki Files vs Folders
 - **Folders** for things with many individual pages: `projects/`, `reviews/`, `overviews/`
