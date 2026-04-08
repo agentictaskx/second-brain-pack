@@ -1,6 +1,6 @@
 ---
 name: second-brain
-description: "Personal knowledge base using the LLM Wiki pattern (Karpathy). Activates when user says: 'ingest', 'ingest this', 'file this', 'save this', 'process this', 'query', 'what do I know about', 'look up', 'search wiki', 'find in wiki', 'lint', 'health check', 'check wiki', 'wiki status', 'add to wiki', 'update wiki', 'weekly summary', 'monthly report', 'todo', 'top of mind', 'what am I waiting on', or asks to search, summarize, organize, or manage their personal knowledge base."
+description: "Personal knowledge base using the LLM Wiki pattern (Karpathy). Activates on explicit /second-brain invocation. Supports: 'ingest', 'query', 'lint', 'health check', 'weekly summary', 'monthly report'."
 ---
 
 # Second Brain — LLM Wiki
@@ -12,8 +12,9 @@ Personal knowledge base following [Karpathy's LLM Wiki pattern](https://gist.git
 At session start, locate and read the schema:
 
 **Vault path discovery (in order):**
-1. Environment variable `SECOND_BRAIN_PATH` if set
-2. Default: `~/second-brain/`
+1. Config file `~/.claude/second-brain.json` → read `vault_path` key
+2. Environment variable `SECOND_BRAIN_PATH` if set
+3. Default: `~/second-brain/`
 
 Read `CLAUDE.md` from the vault root — this is the schema with all conventions, workflows, and protocols. Follow its instructions exactly.
 
@@ -24,6 +25,12 @@ The schema defines three operations:
 - **Ingest** — capture a source into `raw/`, update wiki pages, update index, log it
 - **Query** — read index, find relevant pages, synthesize answer, file back good answers as wiki pages
 - **Lint** — health check the wiki, mark done items, flag undone items, find gaps
+
+## Activation Rules
+
+This skill activates ONLY on explicit `/second-brain` invocation. Generic phrases like "look up", "todo", or "weekly summary" in normal conversation should NOT trigger this skill — only when prefixed with `/second-brain`.
+
+Mutating operations (ingest, lint) require explicit invocation. Read-only queries may activate on `/second-brain query` or `/second-brain what do I know about`.
 
 ## Tools
 

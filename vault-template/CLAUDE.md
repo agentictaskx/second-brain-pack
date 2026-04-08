@@ -1,5 +1,7 @@
 # Your LLM Wiki
 
+**Schema version: 2**
+
 This is a personal knowledge base following the [LLM Wiki pattern](raw/framework.md) by Andrej Karpathy. The LLM incrementally builds and maintains a persistent wiki — structured, interlinked markdown files. The LLM handles all bookkeeping; you curate sources, direct analysis, and think.
 
 **Your markdown editor is the IDE; the LLM is the programmer; the wiki is the codebase.**

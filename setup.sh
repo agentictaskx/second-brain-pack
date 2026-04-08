@@ -16,6 +16,28 @@ if [ -d "$VAULT_DIR" ]; then
     echo "Existing vault found at $VAULT_DIR — running migration..."
     echo ""
 
+    # Check schema version drift
+    CURRENT_VERSION=$(grep -oP 'Schema version: \K[0-9]+' "$VAULT_DIR/CLAUDE.md" 2>/dev/null || echo "0")
+    TEMPLATE_VERSION=$(grep -oP 'Schema version: \K[0-9]+' "$TEMPLATE_DIR/CLAUDE.md" 2>/dev/null || echo "0")
+
+    if [ "$CURRENT_VERSION" != "$TEMPLATE_VERSION" ]; then
+        echo "  WARNING: Schema version drift detected!"
+        echo "  Your vault:  version $CURRENT_VERSION"
+        echo "  This pack:   version $TEMPLATE_VERSION"
+        echo ""
+        echo "  Your CLAUDE.md is outdated. Key changes in v$TEMPLATE_VERSION:"
+        echo "    - Source citation standard (inline citations for auditability)"
+        echo "    - Two outputs rule (answers + wiki updates)"
+        echo "    - Bidirectional linking enforcement"
+        echo "    - Contradiction handling"
+        echo "    - Overview page and hierarchical tags"
+        echo ""
+        echo "  Action required: Compare your CLAUDE.md with vault-template/CLAUDE.md"
+        echo "  and merge the changes. A diff is available at:"
+        echo "    diff \"$VAULT_DIR/CLAUDE.md\" \"$TEMPLATE_DIR/CLAUDE.md\""
+        echo ""
+    fi
+
     # Backfill any new files from template that don't exist in the vault
     backfilled=0
     while IFS= read -r -d '' file; do
@@ -48,10 +70,26 @@ for dir in articles emails meetings chats channels documents books ideas assets 
     mkdir -p "$VAULT_DIR/raw/$dir"
 done
 
+# Create wiki subdirectories required by schema
+echo "Creating wiki directories..."
+for dir in projects reviews overviews; do
+    mkdir -p "$VAULT_DIR/wiki/$dir"
+done
+mkdir -p "$VAULT_DIR/templates"
+
 # Install skill
 echo "Installing skill to $SKILL_DIR..."
 mkdir -p "$SKILL_DIR"
 cp "$SCRIPT_DIR/skill/SKILL.md" "$SKILL_DIR/SKILL.md"
+
+# Persist vault path in config
+CONFIG_FILE="$HOME/.claude/second-brain.json"
+echo "Saving vault path to $CONFIG_FILE..."
+cat > "$CONFIG_FILE" << CONF
+{
+  "vault_path": "$VAULT_DIR"
+}
+CONF
 
 echo ""
 echo "=== Setup Complete ==="

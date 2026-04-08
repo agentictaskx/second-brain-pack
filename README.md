@@ -125,11 +125,15 @@ The LLM routes automatically based on the entity routing table in `CLAUDE.md`.
 
 ## Custom vault path
 
-By default the vault lives at `~/second-brain/`. To change it:
+By default the vault lives at `~/second-brain/`. To use a different location:
 
 ```bash
+# Set before running setup
 export SECOND_BRAIN_PATH="/path/to/your/vault"
+./setup.sh
 ```
+
+Setup persists the vault path to `~/.claude/second-brain.json`, so it works in every future session without needing the env var. To change the path later, re-run setup with the new `SECOND_BRAIN_PATH` or edit the JSON file directly.
 
 ## Optional: Obsidian
 

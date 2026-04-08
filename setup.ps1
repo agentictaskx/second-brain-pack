@@ -19,6 +19,30 @@ if (Test-Path $VaultDir) {
     Write-Host "Existing vault found at $VaultDir - running migration..."
     Write-Host ""
 
+    # Check schema version drift
+    $currentVersion = "0"
+    $claudeMdPath = Join-Path $VaultDir "CLAUDE.md"
+    if (Test-Path $claudeMdPath) {
+        $match = Select-String -Path $claudeMdPath -Pattern 'Schema version: (\d+)' -ErrorAction SilentlyContinue
+        if ($match) { $currentVersion = $match.Matches[0].Groups[1].Value }
+    }
+    $templateVersion = "0"
+    $templateClaudeMd = Join-Path $TemplateDir "CLAUDE.md"
+    if (Test-Path $templateClaudeMd) {
+        $match = Select-String -Path $templateClaudeMd -Pattern 'Schema version: (\d+)' -ErrorAction SilentlyContinue
+        if ($match) { $templateVersion = $match.Matches[0].Groups[1].Value }
+    }
+
+    if ($currentVersion -ne $templateVersion) {
+        Write-Host "  WARNING: Schema version drift detected!" -ForegroundColor Yellow
+        Write-Host "  Your vault:  version $currentVersion"
+        Write-Host "  This pack:   version $templateVersion"
+        Write-Host ""
+        Write-Host "  Your CLAUDE.md is outdated. Action required:"
+        Write-Host "  Compare your CLAUDE.md with vault-template\CLAUDE.md and merge changes."
+        Write-Host ""
+    }
+
     # Backfill any new files from template that don't exist in the vault
     $backfilled = 0
     $templateFiles = Get-ChildItem -Path $TemplateDir -Recurse -File
@@ -59,12 +83,32 @@ foreach ($dir in $rawDirs) {
     }
 }
 
+# Create wiki subdirectories required by schema
+Write-Host "Creating wiki directories..."
+$wikiDirs = @("projects", "reviews", "overviews")
+foreach ($dir in $wikiDirs) {
+    $path = Join-Path $VaultDir "wiki\$dir"
+    if (-not (Test-Path $path)) {
+        New-Item -ItemType Directory -Path $path -Force | Out-Null
+    }
+}
+$templatesDir = Join-Path $VaultDir "templates"
+if (-not (Test-Path $templatesDir)) {
+    New-Item -ItemType Directory -Path $templatesDir -Force | Out-Null
+}
+
 # Install skill
 Write-Host "Installing skill to $SkillDir..."
 if (-not (Test-Path $SkillDir)) {
     New-Item -ItemType Directory -Path $SkillDir -Force | Out-Null
 }
 Copy-Item -Path (Join-Path $ScriptDir "skill\SKILL.md") -Destination (Join-Path $SkillDir "SKILL.md") -Force
+
+# Persist vault path in config
+$ConfigFile = Join-Path $env:USERPROFILE ".claude\second-brain.json"
+Write-Host "Saving vault path to $ConfigFile..."
+$config = @{ vault_path = $VaultDir } | ConvertTo-Json
+Set-Content -Path $ConfigFile -Value $config
 
 Write-Host ""
 Write-Host "=== Setup Complete ===" -ForegroundColor Green
