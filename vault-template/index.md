@@ -7,6 +7,9 @@ type: index
 
 Wiki catalog. The LLM reads this first when answering queries, then drills into relevant pages. Updated on every ingest. Fully regenerated during lint.
 
+## Overview
+- [[wiki/overview|Overview]] — High-level synthesis of the entire wiki. Read after index to get oriented.
+
 ## People
 - [[wiki/people|People]] — Key people directory
 

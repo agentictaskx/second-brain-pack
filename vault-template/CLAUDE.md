@@ -52,6 +52,11 @@ tags: [relevant, tags]
 ---
 ```
 
+**Additional fields by page type:**
+- Wiki pages: add `source_count: N` (how many sources contributed) and `last_updated: YYYY-MM-DD`
+- Entity pages (people, projects): add `entity_type: person | project | tool | channel`
+- Source pages: add `source: URL-or-path` for the original source location
+
 ### Naming
 - Filenames: kebab-case (e.g., `project-alpha.md`, `jane-doe.md`)
 - Date-prefixed for temporal sources: `YYYY-MM-DD-description.md`
@@ -60,6 +65,7 @@ tags: [relevant, tags]
 ### Links
 - Use `[[wikilinks]]` for internal links (works in Obsidian, VS Code with extensions, and many markdown editors)
 - Link from source pages to wiki pages and vice versa
+- **Bidirectional linking:** If page A links to page B, page B should link back. When linking to a page that doesn't exist, create a stub.
 - Cross-reference liberally — connections are as valuable as content
 
 ### Wiki Files vs Folders
@@ -101,7 +107,9 @@ When the user says "ingest this", "file this", "save this", "process this", or d
    `- [ ] Description` `` `src:[[raw/source-page]]` `` `` `added:YYYY-MM-DD` `` `` `due:YYYY-MM-DD` `` (due is optional)
    - Check for duplicates before adding (match by description + source)
    - Place in appropriate section: Do Today / Do This Week / Waiting / Backlog
-6. **Cross-link** — add `[[wikilinks]]` between source page and all touched wiki pages
+6. **Cross-link and cite** — add `[[wikilinks]]` between source page and all touched wiki pages. Every claim in a wiki page should cite its source inline:
+   `"Reached 94.3% accuracy [source: [[raw/source-page|Source Title]]]"`
+   This makes the wiki auditable — when someone asks "where did this come from?" the answer is right there.
 7. **Update index.md** — add/update entries for any new or modified wiki pages. Every wiki page must appear in the index. Format: `- [[path|Title]] — one-line summary`
 8. **Append to log.md** — `## [YYYY-MM-DD] ingest | {type} | {title}`
 
@@ -125,6 +133,7 @@ When the user asks a question, searches for something, or asks for a summary/rep
    - Monthly reports -> `wiki/reviews/monthly-YYYY-MM.md`
    - Analyses/comparisons -> `wiki/overviews/{topic}.md`
 5. **Auto-generate todos** — if the query reveals action items, add to `wiki/todo.md`
+6. **Two outputs rule** — output one is the answer to the user. Output two is updates to relevant wiki pages. If the query produced a valuable synthesis, comparison, or connection, always ask: "Should I file this back into the wiki?" This is how the wiki compounds — without it, good answers evaporate into chat history.
 
 Query types:
 - **Search**: "What do I know about X?" -> list relevant pages
@@ -146,16 +155,19 @@ When the user asks for "health check", "lint", "check wiki", or weekly maintenan
    - Find stale pages (not updated in 30+ days) — suggest refresh or archive
    - Find orphan pages (no inbound links) — suggest connections
    - Find broken `[[wikilinks]]` pointing to non-existent pages — suggest creation
+   - **Check bidirectional links** — if page A links to page B, verify page B links back. Fix any one-directional links.
    - Find missing cross-references between related pages
-   - Find contradictions between pages
+   - Find contradictions between pages (newer sources may supersede older claims)
 3. **Gaps**:
    - Suggest new sources or questions to fill knowledge gaps
    - Surface recurring themes from recent ingests -> update `wiki/top-of-mind.md`
-4. **Index maintenance**:
+4. **Overview refresh**:
+   - Update `wiki/overview.md` with a high-level synthesis of the entire wiki's current state
+5. **Index maintenance**:
    - **Regenerate `index.md`** by scanning all files in `wiki/` — every wiki page must have an entry
    - Compare index entries against actual files — flag pages missing from index, remove entries for deleted pages
    - Format: `- [[path|Title]] — one-line summary` under the appropriate category heading
-5. **Append to log.md** — `## [YYYY-MM-DD] lint | Wiki health check`
+6. **Append to log.md** — `## [YYYY-MM-DD] lint | Wiki health check`
 
 ---
 
