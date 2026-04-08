@@ -35,6 +35,7 @@ Wiki catalog. The LLM reads this first when answering queries, then drills into 
 - [[wiki/todo|Todo]] — Tasks, action items, follow-ups
 - [[wiki/top-of-mind|Top of Mind]] — Current themes and priorities
 - [[wiki/bookmarks|Bookmarks]] — Curated links by topic
+- [[wiki/usage-log|Usage Log]] — Skill invocation log for optimization
 
 ## Sources
 - [[raw/framework|LLM Wiki Framework]] — Karpathy's LLM Wiki pattern (reference document)
